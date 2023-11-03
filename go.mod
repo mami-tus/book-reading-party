@@ -13,6 +13,7 @@ require github.com/ikawaha/kagome-dict v1.0.9 // indirect
 
 require (
 	github.com/andybalholm/cascadia v1.3.2 // indirect
+	github.com/google/go-cmp v0.6.0
 	github.com/ikawaha/kagome/v2 v2.9.4
 	golang.org/x/net v0.17.0 // indirect
 )

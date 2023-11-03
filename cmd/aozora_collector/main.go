@@ -21,6 +21,7 @@ import (
 	"golang.org/x/text/encoding/japanese"
 )
 
+var pageURLFormat = "https://www.aozora.gr.jp/cards/%s/card%s.html"
 type Entry struct {
 	AuthorID string
 	Author   string
@@ -33,12 +34,14 @@ type Entry struct {
 func findEntries(siteURL string) ([]Entry, error) {
 	// Deprecated:
 	// doc, err := goquery.NewDocument(siteURL)
+	// まず、http.Get関数を使用してウェブページからHTTP GETリクエストを送信し、そのレスポンスを取得しています。エラーが発生した場合は、空の文字列を返します。
 	res, err := http.Get(siteURL)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
 
+	// 次に、goquery.NewDocumentFromReader関数を使用して、レスポンスボディからHTMLドキュメントを作成します。エラーが発生した場合も、空の文字列を返します。
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
 		return nil, err
@@ -69,7 +72,7 @@ func findEntries(siteURL string) ([]Entry, error) {
 			return
 		}
 		title := elem.Text()
-		pageURL := fmt.Sprintf("https://www.aozora.gr.jp/cards/%s/card%s.html", token[1], token[2])
+		pageURL := fmt.Sprintf(pageURLFormat, token[1], token[2])
 		author, zipURL := findAuthorAndZIP(pageURL)
 		if zipURL != "" {
 			entries = append(entries, Entry{
@@ -251,7 +254,7 @@ func extractText(zipURL string) (string, error) {
 			if err != nil {
 				return "", err
 			}
-			return string(b), nil  // ここでデコードされた文字列を返します
+			return string(b), nil // ここでデコードされた文字列を返します
 		}
 	}
 
